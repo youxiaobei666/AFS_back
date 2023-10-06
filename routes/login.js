@@ -13,21 +13,16 @@ const jwt = require("jsonwebtoken");
 const MY_SECRET_KEY = "my_secret_key";
 // 导入 mysql2
 const mysql2 = require("mysql2");
-
+// 导入数据库配置
+const databaseConfig = require('../constants/database')
 // 定义所有用户信息列表
 let users = [];
 // 配置数据库
-const connection = mysql2.createConnection({
-  host: "127.0.0.1",
-  port: 3306,
-  user: "root",
-  password: "yjc010203.",
-  database: "proj_1_14",
-});
+const connection = mysql2.createConnection(databaseConfig);
 // 连接数据库
 connection.connect();
 // 定义查询所有用户的语句
-const selectAllUser = "SELECT * FROM proj_1_14.users";
+const selectAllUser =  `SELECT * FROM ${process.env.databaseName}.users`;
 // 开始查询
 connection.query(selectAllUser, (err, res) => {
   // 处理数据库错误

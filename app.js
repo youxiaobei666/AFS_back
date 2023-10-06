@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var { expressjwt: jwt } = require("express-jwt");
+require('dotenv').config()
 // 生成密钥
 const MY_SECRET_KEY = "my_secret_key";
 // 导入bodyParser
@@ -15,6 +16,7 @@ var loginRouter = require("./routes/login");
 var profileRouter = require("./routes/profile");
 var userInfoRouter = require("./routes/userInfo");
 var uploadRouter = require('./routes/upload')
+var animalList = require('./routes/animalList')
 
 var app = express();
 
@@ -46,6 +48,7 @@ app.use("/login", loginRouter);
 app.use("/profile", profileRouter);
 app.use("/userinfo", userInfoRouter);
 app.use('/upload', uploadRouter)
+app.use('/animal',animalList)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

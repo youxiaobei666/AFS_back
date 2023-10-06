@@ -3,7 +3,9 @@
 ```
 npm i
 
-npm start
+npm start h
+
+nodemon ./bin/www
 
 port: 3000
 ```

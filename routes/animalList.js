@@ -1,4 +1,3 @@
-const path = require('path')
 // 导入 express
 const express = require("express");
 // 导入 mysql2
@@ -7,21 +6,21 @@ const mysql2 = require("mysql2");
 const databaseConfig = require('../constants/database')
 
 // 定义所有用户信息列表
-let userInfo = [];
+let animalInfo = [];
 // 配置数据库
 const connection = mysql2.createConnection(databaseConfig);
 // 连接数据库
 connection.connect();
 // 定义查询所有用户的语句
-const selectAllUser = `SELECT * FROM  ${process.env.databaseName}.users`;
+const selectAllAnimal = `SELECT * FROM  ${process.env.databaseName}.animal`;
 // 开始查询
-connection.query(selectAllUser, (err, res) => {
+connection.query(selectAllAnimal, (err, res) => {
   // 处理数据库错误
   if (err) {
     console.log(err);
   }
   // 赋值给 users
-  userInfo = res;
+  animalInfo = res;
 });
 
 // 生成以下路由
@@ -33,26 +32,26 @@ const router = express.Router();
  * 使用 router.get 或者 router.post 确定方法
  */
 
-router.get("/", (req, res) => {
+router.get("/query-list", (req, res) => {
   // 返回token
   res.json({
-    message: "获取所有用户表成功!",
+    message: "获取所有动物表成功!",
     code: 200,
     data: {
-      userInfo,
-      total: userInfo.length
+      animalInfo,
+      total: animalInfo.length
     },
     success: true,
   });
 });
 
 /**
- * 修改用户信息
+ * 修改动物信息
  */
 router.post("/save", (req, res) => {
-  const { age, city, email, hobby, id, img, name } = req.body;
+  const { animal_age, animal_address, animal_name, animal_color, animal_id, animal_img, status } = req.body;
 
-  if (!id) {
+  if (!animal_id) {
     return res.status(400).json({
       message: "ID 是必须的",
       success: false,
@@ -62,29 +61,29 @@ router.post("/save", (req, res) => {
   let updateFields = [];
   let updateValues = [];
 
-  if (age) {
-    updateFields.push("age = ?");
-    updateValues.push(age);
+  if (animal_age) {
+    updateFields.push("animal_age = ?");
+    updateValues.push(animal_age);
   }
-  if (city) {
-    updateFields.push("city = ?");
-    updateValues.push(city);
+  if (animal_address) {
+    updateFields.push("animal_address = ?");
+    updateValues.push(animal_address);
   }
-  if (email) {
-    updateFields.push("email = ?");
-    updateValues.push(email);
+  if (status) {
+    updateFields.push("status = ?");
+    updateValues.push(status);
   }
-  if (hobby) {
-    updateFields.push("hobby = ?");
-    updateValues.push(hobby);
+  if (animal_color) {
+    updateFields.push("animal_color = ?");
+    updateValues.push(animal_color);
   }
-  if (img) {
-    updateFields.push("img = ?");
-    updateValues.push(img);
+  if (animal_img) {
+    updateFields.push("animal_img = ?");
+    updateValues.push(animal_img);
   }
-  if (name) {
-    updateFields.push("name = ?");
-    updateValues.push(name);
+  if (animal_name) {
+    updateFields.push("animal_name = ?");
+    updateValues.push(animal_name);
   }
 
   if (updateFields.length === 0) {
@@ -93,10 +92,10 @@ router.post("/save", (req, res) => {
       success: false,
     });
   }
-  const updateUser = `UPDATE  ${process.env.databaseName}.users SET ${updateFields.join(
+  const updateUser = `UPDATE  ${process.env.databaseName}.animal SET ${updateFields.join(
     ","
-  )} WHERE id = ?`;
-  updateValues.push(id);
+  )} WHERE animal_id = ?`;
+  updateValues.push(animal_id);
 
   connection.query(updateUser, updateValues, (err) => {
     if (err) {
@@ -104,7 +103,7 @@ router.post("/save", (req, res) => {
       return res.status(500).json({
         success: false,
         data: {
-          message: "更新用户信息时出错",
+          message: "更新动物信息时出错",
           success: false,
         },
       });
@@ -114,7 +113,7 @@ router.post("/save", (req, res) => {
       success: true,
       code: 200,
       data: {
-        message: "用户信息更新成功！",
+        message: "动物信息更新成功！",
         success: true,
       },
     });
@@ -122,43 +121,43 @@ router.post("/save", (req, res) => {
 });
 
 /**
- * 删除用户，根据 id
+ * 删除动物，根据 id
  */
-router.delete("/delete/:id", async (req, res) => {
-  const userId = req.params.id;
+router.delete("/delete/:animal_id", async (req, res) => {
+  const animalId = req.params.animal_id;
 
-  if (!userId) {
+  if (!animalId) {
     return res.status(400).json({
       success: true,
       data: {
-        message: "id 必传",
+        message: "animal_id 必传",
         success: true,
       },
     });
   }
 
   try {
-    const deleteUser = "DELETE FROM users WHERE id = ?";
-    const [result] = await connection.promise().query(deleteUser, [userId]);
+    const deleteAnimal = "DELETE FROM animal WHERE animal_id = ?";
+    const [result] = await connection.promise().query(deleteAnimal, [animalId]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
         data: {
-          message: "用户未找到",
+          message: "动物未找到",
           success: false,
         },
       });
     }
 
-    const [allUsers] = await connection.promise().query(selectAllUser);
+    const [allAnimals] = await connection.promise().query(selectAllAnimal);
 
     res.status(200).json({
       success: true,
       data: {
-        message: "用户删除成功",
+        message: "动物删除成功",
         success: true,
-        users: allUsers,
+        users: allAnimals,
       },
     });
   } catch (error) {
