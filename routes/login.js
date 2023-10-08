@@ -14,7 +14,7 @@ const MY_SECRET_KEY = "my_secret_key";
 // 导入 mysql2
 const mysql2 = require("mysql2");
 // 导入数据库配置
-const databaseConfig = require('../constants/database')
+const databaseConfig = require("../constants/database");
 // 定义所有用户信息列表
 let users = [];
 // 配置数据库
@@ -22,7 +22,7 @@ const connection = mysql2.createConnection(databaseConfig);
 // 连接数据库
 connection.connect();
 // 定义查询所有用户的语句
-const selectAllUser =  `SELECT * FROM ${process.env.databaseName}.users`;
+const selectAllUser = `SELECT * FROM ${process.env.databaseName}.users`;
 // 开始查询
 connection.query(selectAllUser, (err, res) => {
   // 处理数据库错误
@@ -52,11 +52,22 @@ router.post("/", (req, res) => {
   const user = users.find((item) => {
     return item.username === username && item.password === password;
   });
-   // 将 permission 字符串转换为逗号分隔的数组
-   const permissionsNameList = user.permission.split(",");
+  // 将 permission 字符串转换为逗号分隔的数组
+  let permissionsNameList = [];
   // 鉴权失败
   if (!user) {
-    return res.status(401).json({ message: "鉴权失败，用户名或者密码错误！" });
+    return res.json({
+      success: false,
+      code: 401,
+      data: {
+        message: "鉴权失败，用户名或者密码错误！",
+        success: false,
+      },
+    });
+  } else {
+    if(user.permission) {
+      permissionsNameList = user.permission.split(",");
+    }
   }
   // 生成 token,有效期 暂定一天 24h
   const token = jwt.sign({ ID: user.id }, MY_SECRET_KEY, {
@@ -64,13 +75,13 @@ router.post("/", (req, res) => {
   });
   // 返回token
   res.json({
-    message: "yeah!登陆成功!",
+    success: true,
     code: 200,
     data: {
       token,
-      permissionsNameList
+      permissionsNameList,
+      message: "yeah!登陆成功!",
     },
-    success: true,
   });
 });
 

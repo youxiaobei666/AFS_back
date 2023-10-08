@@ -36,13 +36,14 @@ const router = express.Router();
 router.get("/", (req, res) => {
   // 返回token
   res.json({
-    message: "获取所有用户表成功!",
+    success: true,
     code: 200,
     data: {
       userInfo,
-      total: userInfo.length
+      total: userInfo.length,
+      message: "获取所有用户表成功!",
     },
-    success: true,
+    
   });
 });
 
@@ -101,11 +102,11 @@ router.post("/save", (req, res) => {
   connection.query(updateUser, updateValues, (err) => {
     if (err) {
       console.error(err);
-      return res.status(500).json({
+      return res.json({
         success: false,
+        code: 500,
         data: {
           message: "更新用户信息时出错",
-          success: false,
         },
       });
     }
@@ -115,7 +116,6 @@ router.post("/save", (req, res) => {
       code: 200,
       data: {
         message: "用户信息更新成功！",
-        success: true,
       },
     });
   });

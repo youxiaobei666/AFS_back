@@ -13,6 +13,7 @@ const bodyParser = require("body-parser");
 // 导入路由
 var indexRouter = require("./routes/index");
 var loginRouter = require("./routes/login");
+var registerRouter = require('./routes/register')
 var profileRouter = require("./routes/profile");
 var userInfoRouter = require("./routes/userInfo");
 var uploadRouter = require('./routes/upload')
@@ -31,7 +32,7 @@ app.use(
     secret: MY_SECRET_KEY,
     algorithms: ["HS256"], // 加密算法
   }).unless({
-    path: ["/", "/login", /^\/public\/uploads\/.*/], //除了这些地址，其他的URL都需要验证
+    path: ["/", "/login", '/register',/^\/public\/uploads\/.*/], //除了这些地址，其他的URL都需要验证
   })
 );
 
@@ -45,6 +46,7 @@ app.use('/public/uploads', express.static(path.join(__dirname, "public/uploads")
 // 注册路由
 app.use("/", indexRouter);
 app.use("/login", loginRouter);
+app.use('/register',registerRouter)
 app.use("/profile", profileRouter);
 app.use("/userinfo", userInfoRouter);
 app.use('/upload', uploadRouter)

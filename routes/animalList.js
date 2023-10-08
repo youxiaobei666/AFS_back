@@ -35,13 +35,13 @@ const router = express.Router();
 router.get("/query-list", (req, res) => {
   // 返回token
   res.json({
-    message: "获取所有动物表成功!",
+    success: true,
     code: 200,
     data: {
       animalInfo,
-      total: animalInfo.length
+      total: animalInfo.length,
+      message: "获取所有动物表成功!"
     },
-    success: true,
   });
 });
 

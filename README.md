@@ -10,6 +10,19 @@ nodemon ./bin/www
 port: 3000
 ```
 
+> 响应格式参考：
+```js
+{
+  success: true
+  code: xxx,
+  data: {
+    message: '消息提示',
+    list: [],
+    total: 100
+  }
+}
+```
+
 ## 1. 开发 login 登陆模块
 
 - 导入数据库，配置数据库对象，连接数据库，获取用户表
