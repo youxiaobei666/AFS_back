@@ -18,6 +18,7 @@ var profileRouter = require("./routes/profile");
 var userInfoRouter = require("./routes/userInfo");
 var uploadRouter = require('./routes/upload')
 var animalList = require('./routes/animalList')
+var chatRouter = require('./routes/chat')
 
 var app = express();
 
@@ -51,6 +52,7 @@ app.use("/profile", profileRouter);
 app.use("/userinfo", userInfoRouter);
 app.use('/upload', uploadRouter)
 app.use('/animal',animalList)
+app.use('/chat', chatRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -25,6 +25,7 @@ router.post("/", (req, res) => {
       success: false,
       code: 500,
       data: {
+        success: true,
         message: "服务器异常",
       },
     });
@@ -55,6 +56,7 @@ router.post("/", (req, res) => {
         success: false,
         code: 500,
         data: {
+          success: true,
           message: "服务器异常",
         },
       });
@@ -78,6 +80,7 @@ router.post("/", (req, res) => {
       code: 200,
       data: {
         userInfo,
+        success: true,
         message: "请求用户数据成功！",
       },
     });

@@ -78,6 +78,7 @@ router.post("/", (req, res) => {
     success: true,
     code: 200,
     data: {
+      success: true,
       token,
       permissionsNameList,
       message: "yeah!登陆成功!",

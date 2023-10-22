@@ -58,10 +58,10 @@ router.post("/", (req, res) => {
         // 处理数据库错误
         if (err) {
           console.log(err);
-          return res.json({ success: false, code: 500, data: {message: "服务器错误，请稍后再试！" }});
+          return res.json({ success: false, code: 500, data: {message: "服务器错误，请稍后再试！", success: false, }});
         }
         // 返回成功信息
-        res.json({ code: 200, success: true,data: {message: "注册成功！"}, });
+        res.json({ code: 200, success: true,data: {message: "注册成功！",success: true}, });
       }
     );
   });

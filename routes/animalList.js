@@ -40,6 +40,7 @@ router.get("/query-list", (req, res) => {
     data: {
       animalInfo,
       total: animalInfo.length,
+      success: true,
       message: "获取所有动物表成功!"
     },
   });

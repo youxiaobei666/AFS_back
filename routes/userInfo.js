@@ -42,6 +42,7 @@ router.get("/", (req, res) => {
       userInfo,
       total: userInfo.length,
       message: "获取所有用户表成功!",
+      success: true
     },
     
   });
@@ -51,7 +52,7 @@ router.get("/", (req, res) => {
  * 修改用户信息
  */
 router.post("/save", (req, res) => {
-  const { age, city, email, hobby, id, img, name } = req.body;
+  const { age, city, email, hobby, id, img, name, friends } = req.body;
 
   if (!id) {
     return res.status(400).json({
@@ -87,6 +88,10 @@ router.post("/save", (req, res) => {
     updateFields.push("name = ?");
     updateValues.push(name);
   }
+  if (friends) {
+    updateFields.push("friends = ?");
+    updateValues.push(friends);
+  }
 
   if (updateFields.length === 0) {
     return res.status(400).json({
@@ -107,6 +112,7 @@ router.post("/save", (req, res) => {
         code: 500,
         data: {
           message: "更新用户信息时出错",
+          success: true
         },
       });
     }
@@ -116,6 +122,7 @@ router.post("/save", (req, res) => {
       code: 200,
       data: {
         message: "用户信息更新成功！",
+        success: true
       },
     });
   });
