@@ -19,20 +19,23 @@ const router = express.Router();
 
 router.post("/", (req, res) => {
   console.log(req.body);
-  const { username } = req.body;
-  if (!username) {
+  const { username, id } = req.body;
+  console.log("id", id);
+  if (!username && !id) {
+    // 如果没有提供 username 或 id，返回错误信息
     return res.json({
       success: false,
       code: 500,
       data: {
-        success: true,
-        message: "服务器异常",
+        success: false,
+        message: "服务器异常，需要提供用户名或用户ID",
       },
     });
   }
-  // 定义查询所有用户的语句
-  var getUserInfo = `SELECT * FROM  ${process.env.databaseName}.users where username = '${username}'`;
-  
+
+  // 修改了查询用户的语句，添加了通过 id 查询的可能
+  var getUserInfo = `SELECT * FROM ${process.env.databaseName}.users where username = '${username}' OR id = '${id}'`;
+
   // 开始查询
   connection.query(getUserInfo, (err, queryRes) => {
     // 处理数据库错误
@@ -41,52 +44,67 @@ router.post("/", (req, res) => {
     }
     // 赋值给 users
     userInfo = queryRes[0];
-    // 查询用户的好友ID列表
-  var friendIDs = userInfo.friends.split(",").map((id) => parseInt(id, 10));
 
-  // 查询好友信息
-  var getFriendsInfo = `SELECT * FROM ${
-    process.env.databaseName
-  }.users WHERE id IN (${friendIDs.join(",")})`;
+    // if (userInfo.friends) {
+    //   friendIDs = userInfo.friends.split(",").map((id) => parseInt(id, 10));
+    // } else {
+    //   console.log("userInfo.friends is null");
+    // }
 
-  connection.query(getFriendsInfo, (err, friendsRes) => {
-    if (err) {
-      console.log(err);
-      return res.json({
-        success: false,
-        code: 500,
+    // 是否 有好友
+   if(userInfo.friends) {
+     // 查询好友信息
+     var getFriendsInfo = `SELECT * FROM ${
+      process.env.databaseName
+    }.users WHERE id IN (${userInfo.friends})`;
+    connection.query(getFriendsInfo, (err, friendsRes) => {
+      if (err) {
+        console.log(err);
+        return res.json({
+          success: false,
+          code: 500,
+          data: {
+            success: true,
+            message: "服务器异常，获取好友信息失败",
+          },
+        });
+      }
+
+      // 构建好友信息数组
+      const userFriendsList = friendsRes.map((friend) => ({
+        id: friend.id,
+        username: friend.username,
+        friend_img: friend.img,
+        friend_city: friend.city,
+        friend_email: friend.email,
+        friend_age: friend.age,
+      }));
+
+      // 将好友信息添加到userInfo中
+      userInfo.userFriendsList = userFriendsList;
+
+      res.json({
+        success: true,
+        code: 200,
         data: {
+          userInfo,
           success: true,
-          message: "服务器异常",
+          message: "请求用户数据成功！",
         },
       });
-    }
-
-    // 构建好友信息数组
-    const userFriendsList = friendsRes.map(friend => ({
-      id: friend.id,
-      username: friend.username,
-      friend_img: friend.img,
-      friend_city: friend.city,
-      friend_email: friend.email,
-      friend_age: friend.age
-    }));
-
-    // 将好友信息添加到userInfo中
-    userInfo.userFriendsList = userFriendsList;
-
+    });
+   } else {
     res.json({
       success: true,
       code: 200,
       data: {
-        userInfo,
         success: true,
-        message: "请求用户数据成功！",
+        userInfo,
+        message: "请求成功，但用户无好友",
       },
     });
+   }
   });
-})
-
 });
 
 // 导出这个路由
