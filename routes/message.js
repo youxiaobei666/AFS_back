@@ -58,7 +58,7 @@ router.post("/query-message", (req, res) => {
 // 删除
 router.post("/delete-message", (req, res) => {
   let { id } = req.body;
-  
+
   let deleteSql = `DELETE FROM ${databaseConfig.database}.messageList WHERE  id = ${id}`;
   connection.query(deleteSql, (err, result) => {
     if (err) {

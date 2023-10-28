@@ -1,4 +1,5 @@
 var createError = require("http-errors");
+var cors = require('cors')
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
@@ -26,6 +27,12 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+// 使用 cors 中间件
+app.use(cors());
+// app.use(cors({
+//   origin: 'http://xxx.com' // 只允许这个域进行跨域请求
+// }));
 
 app.use(logger("dev"));
 app.use(express.json());
