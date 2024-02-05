@@ -25,6 +25,7 @@ router.post("/", upload.single("file"), function (req, res, next) {
     return res.status(400).send({ message: "未上传文件" });
   }
 
+  // TODO 上传地址到底使用什么？
   const fileUrl = "http://127.0.0.1:3001/" + req.file.path.replace(/\\/g, "/");
   // const fileUrl = "http://youxiaobei.top/" + req.file.path.replace(/\\/g, "/");
   res.status(201).send({ url: fileUrl });
