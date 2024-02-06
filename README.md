@@ -33,3 +33,8 @@ port: 3001
 - 上传图片路径地址没确定，目前使用的是本地地址，上线后应该使用上线地址。没根据环境改变根路径，建议使用 env 尝试 。优先级：中
 
 - 本地和线上用户数据应该是分开的，不应该直接把数据都导入，导入也没关系。优先级：低
+
+- webSocket 报错导致项目停止（connections[thisSessionId.split("-").reverse().join("-")].forEach(
+  ^
+
+TypeError: Cannot read properties of undefined (reading 'forEach')）
