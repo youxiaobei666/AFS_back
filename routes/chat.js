@@ -1,5 +1,3 @@
-/** @format */
-
 const express = require("express");
 var router = express.Router();
 const { v4: uuidv4 } = require("uuid");
@@ -41,6 +39,7 @@ wss.on("connection", (ws, req) => {
 
   // 当收到这个连接的消息时
   ws.on("message", (message) => {
+    console.log("收到消息", connections);
     // 如果消息是 Buffer，转换为字符串
     if (Buffer.isBuffer(message)) {
       message = message.toString();
@@ -61,6 +60,11 @@ wss.on("connection", (ws, req) => {
     }
     // 如果thisSessionId仍存在于connections中, // 确保连接仍然打开，并给所有同一会话的连接发送消息，仅对目标用户
     if (connections[thisSessionId]) {
+      // 对方在线才能发送消息, 暂时没有离线聊天功能
+      if (!connections[thisSessionId.split("-").reverse().join("-")]) {
+        return;
+      }
+
       connections[thisSessionId.split("-").reverse().join("-")].forEach(
         (client) => {
           console.log("client.mineId", client.mineId);

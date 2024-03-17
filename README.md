@@ -14,17 +14,15 @@ port: 3001
 
 ```js
 {
-  success: true
-  code: xxx,
+  success: boolean
+  code: number,
   data: {
-    message: '消息提示',
-    list: [],
-    total: 100
+    message: string,
+    list: array,
+    total: number
   }
 }
 ```
-
-数据库在根目录 afs.sql
 
 ## 项目当前存在的问题
 
@@ -34,7 +32,5 @@ port: 3001
 
 - 本地和线上用户数据应该是分开的，不应该直接把数据都导入，导入也没关系。优先级：低
 
-- webSocket 报错导致项目停止（connections[thisSessionId.split("-").reverse().join("-")].forEach(
+- 已修复 ：webSocket 报错导致项目停止（前端聊天界面刷新报错 -> 后端 connections[thisSessionId.split("-").reverse().join("-")].forEach(
   ^
-
-TypeError: Cannot read properties of undefined (reading 'forEach')）
